@@ -18,7 +18,7 @@ const Main = () => {
     const { longitude, latitude, altitude, radius } = nextObserverInfo;
 
     setLoading(true);
-    fetch(`${ABOVE_API_BASE_URL}/${latitude}/${longitude}/${altitude}/${radius}/${SAT_CATEGORY}&apiKey=${NY20_API_KEY}`)
+    fetch(`${ABOVE_API_BASE_URL}/${latitude}/${longitude}/${altitude}/${radius}/${SAT_CATEGORY}/&apiKey=${NY20_API_KEY}`)
       .then(response => response.json())
       .then(data => {
         setSatList(data.above.map((satellite) => {
