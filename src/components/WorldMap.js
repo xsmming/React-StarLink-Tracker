@@ -8,9 +8,9 @@ import {
   Marker
 } from "react-simple-maps";
 import { Button, InputNumber, Progress } from "antd";
-import { NY20_API_KEY, NY20_BASE_URL } from "../constants";
+import { NY20_API_KEY, NY20_BASE_URL, CORS_BASE} from "../constants";
 
-export const POSITION_API_BASE_URL = `${NY20_BASE_URL}/positions`;
+export const POSITION_API_BASE_URL = `/positions`;
 
 const progressStatus = {
   Idle: 'Idle',
@@ -49,7 +49,12 @@ const WorldMap = ({
 
     return selectedSatellites.map((sat) => {
       const id = sat.satid;
-      return fetch(`${POSITION_API_BASE_URL}/${id}/${latitude}/${longitude}/${altitude}/${duration * 60}&apiKey=${NY20_API_KEY}`)
+
+      var url = new URL(`${CORS_BASE}/SatTrackServlet`, params);
+      var params = {id:id, lat:latitude, lon:longitude, alt:altitude, duration:duration*60};
+      url.search = new URLSearchParams(params).toString();
+      // orgin: ${POSITION_API_BASE_URL}/${id}/${latitude}/${longitude}/${altitude}/${duration * 60}/&apiKey=${NY20_API_KEY}
+      return fetch(url)
         .then(response => response.json());
     })
   }

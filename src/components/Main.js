@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Col, Row } from "antd";
 import ObserverInfo from "./ObserverInfo";
-import { SAT_CATEGORY, NY20_API_KEY, NY20_BASE_URL } from "../constants";
+import { SAT_CATEGORY, NY20_API_KEY, NY20_BASE_URL, CORS_BASE } from "../constants";
 import SatelliteList from "./SatelliteList";
 import WorldMap from "./WorldMap";
 
@@ -18,7 +18,17 @@ const Main = () => {
     const { longitude, latitude, altitude, radius } = nextObserverInfo;
 
     setLoading(true);
-    fetch(`${ABOVE_API_BASE_URL}/${latitude}/${longitude}/${altitude}/${radius}/${SAT_CATEGORY}/&apiKey=${NY20_API_KEY}`)
+    // origin: '/above/${latitude}/${longitude}/${altitude}/${radius}/${SAT_CATEGORY}/&apiKey=${NY20_API_KEY}'
+    // updated: http://localhost:8080/jupiter/SatServlet?lat=${latitude}&lon=${longitude}&alt=${altitude}&radius=${radius}&satCategory=${SAT_CATEGORY}
+    // http://localhost:8080/jupiter/SatServlet?lat=0&lon=0&alt=0&radius=90&satCategory=52
+
+
+    var url = new URL(`${CORS_BASE}/SatServlet`, params);
+    var params = {lat:latitude, lon:longitude, alt:altitude, radius:radius, satCategory:SAT_CATEGORY};
+
+    url.search = new URLSearchParams(params).toString();
+
+    fetch(url)
       .then(response => response.json())
       .then(data => {
         setSatList(data.above.map((satellite) => {
